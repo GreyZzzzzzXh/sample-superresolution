@@ -163,9 +163,12 @@ bool GeneralInference::Inference(
 
   // 2. process
   HIAI_ENGINE_LOG("aiModelManager->Process start!");
+  clock_t start = clock();
   ret = ai_model_manager_->Process(ai_context, input_data_vec, output_data_vec,
                                    kAiModelProcessTimeout);
-  // process failed, also need to send data to post process
+  clock_t end = clock();
+  INFO_LOG("inference time: %f s", (double)(end - start) / CLOCKS_PER_SEC);
+
   if (ret != hiai::SUCCESS) {
     HIAI_ENGINE_LOG(HIAI_ENGINE_RUN_ARGS_NOT_RIGHT, "call Process failed");
     return false;

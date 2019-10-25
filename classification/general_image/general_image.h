@@ -69,10 +69,12 @@ private:
    * @brief: arrange image information
    * @param [out]: image_handle: image handler
    * @param [in]: image file path
+   * @param [in]: model type
    * @return: true: success; false: failed
    */
   bool ArrangeImageInfo(std::shared_ptr<EngineTrans> &image_handle,
-                        const std::string &image_path);
+                        const std::string &image_path,
+                        const uint8_t model_type);
 
   /**
    * @brief: send result

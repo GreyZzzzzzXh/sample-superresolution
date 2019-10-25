@@ -42,24 +42,28 @@ GRAPH_TEMPLATE_FILE = 'graph.template'
 GRAPH_CONFIG_FILE = 'graph.config'
 
 CPP_EXE = './ascend_classification'
-CONCOLE_LIST = ' {} {} {} {}'
+CONCOLE_LIST = ' {} {} {} {} {}'
 
 
 def get_args():
     """input argument parser function
+        -t --model_type: super-resolution model type (0:SRCNN, 1:FSRCNN, 2:ESPCN).
         -m --model_path: davinci offline model path.
         -w --model_width: width of input images required by model.
         -h --model_height: height of input images required by model.
         -i --input_path: paths and folders of input images.
-        -n --top_n: topN classfication results.
+        -c --is_colored: whether the image is colored (1:yes, 0:no).
         eg:
-        python3 classfication_demo.py -m google_net.om \
-        -w 224 -h 224 -i ./example.jpg -n 10
+        python3 run_classification.py -t 0 -m srcnn.om \
+        -w 224 -h 224 -i test.jpg -c 1
     """
     parser = argparse.ArgumentParser(
         conflict_handler='resolve',
-        description='eg: python3 classfication_demo.py -m test.om \
-        -w 224 -h 224 -i test.jpg -n 10')
+        description='eg: python3 run_classification.py -t 0 -m srcnn.om \
+        -w 224 -h 224 -i test.jpg -c 1')
+    parser.add_argument('-t', '--model_type', required=True, type=int,
+                        help='super-resolution model type \
+                              (0:SRCNN, 1:FSRCNN, 2:ESPCN).')
     parser.add_argument('-m', '--model_path', required=True,
                         help='davinci offline model path.')
     parser.add_argument('-w', '--model_width', required=True, type=int,
@@ -69,8 +73,8 @@ def get_args():
     parser.add_argument('-i', '--input_path', required=True, nargs='*',
                         help='paths of input images. support multipath, using \
                               spaces to distinguish.')
-    parser.add_argument('-n', '--top_n', type=int, default=10,
-                        help='topN classfication results.')
+    parser.add_argument('-c', '--is_colored', type=int, default=1,
+                        help='whether the image is colored (1:yes, 0:no).')
     return parser.parse_args()
 
 
@@ -96,14 +100,17 @@ def validate_args(args):
         elif not os.path.isfile(path):
             eprint('[ERROR] input image path=%r does not exist.' % path)
             check_flag = False
-    if not 1 <= args.top_n <= 100:
-        eprint('[ERROR] topN must be between 1 and 100.')
+    if not 0 <= args.model_type <= 2:
+        eprint('[ERROR] model type must be between 0 and 2.')
         check_flag = False
     if not 16 <= args.model_width <= 4096:
         eprint('[ERROR] model width must be between 16 and 4096.')
         check_flag = False
     if not 16 <= args.model_height <= 4096:
         eprint('[ERROR] model height must be between 16 andd 4096.')
+        check_flag = False
+    if not 0 <= args.is_colored <= 1:
+        eprint('[ERROR] is_colored must be 0 or 1.')
         check_flag = False
     return check_flag
 
@@ -113,8 +120,9 @@ def assemble_console_params(args):
     :return: console params string
     """
     image_path = ','.join(args.input_path)
-    console_params = CONCOLE_LIST.format(args.model_width, args.model_height,
-                                         image_path, args.top_n)
+    console_params = CONCOLE_LIST.format(args.model_type, args.model_width, 
+                                         args.model_height, image_path,
+                                         args.is_colored)
     return console_params
 
 

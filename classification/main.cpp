@@ -59,10 +59,11 @@ const uint32_t kPostEngineId = 641;
 const string kGraphConfigFilePath = "./graph.config";
 
 // args positon
-const int32_t kModelWidthPos = 1;
-const int32_t kModelHeightPos = 2;
-const int32_t kImagePathPos = 3;
-const int32_t kOutputNumsPos = 4;
+const int32_t kModelTypePos = 1;
+const int32_t kModelWidthPos = 2;
+const int32_t kModelHeightPos = 3;
+const int32_t kImagePathPos = 4;
+const int32_t kIsColoredPos = 5;
 
 // sleep interval for every image (unit: microseconds)
 const __useconds_t kSleepInterval = 100000;
@@ -89,10 +90,11 @@ HIAI_StatusT CustomDataRecvInterface::RecvData(
 void SetConsoleParams(char *argv[], shared_ptr<ConsoleParams> param_ptr) {
   // no need to check anything, python script already checked
   // and parameters all fixed position
+  param_ptr->model_type = atoi(argv[kModelTypePos]);
   param_ptr->model_width = atoi(argv[kModelWidthPos]);
   param_ptr->model_height = atoi(argv[kModelHeightPos]);
   param_ptr->input_path = string(argv[kImagePathPos]);
-  param_ptr->output_nums = atoi(argv[kOutputNumsPos]);
+  param_ptr->is_colored = atoi(argv[kIsColoredPos]);
 }
 
 int main(int argc, char *argv[]) {

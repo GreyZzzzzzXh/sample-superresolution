@@ -41,14 +41,16 @@
  * @brief: console input parameter
  */
 struct ConsoleParams {
+  // model type
+  uint8_t model_type = 0;
   // model width
   uint32_t model_width = 0;
   // model height
   uint32_t model_height = 0;
   // input image path
   std::string input_path = "";
-  // output result count: means top-N
-  uint32_t output_nums = 0;
+  // whether the image is colored
+  uint8_t is_colored = 0;
 };
 
 /**
@@ -56,7 +58,8 @@ struct ConsoleParams {
  */
 template<class Archive>
 void serialize(Archive& ar, ConsoleParams& data) {
-  ar(data.model_width, data.model_height, data.input_path, data.output_nums);
+  ar(data.model_type, data.model_width, data.model_height, data.input_path,
+     data.is_colored);
 }
 
 /**

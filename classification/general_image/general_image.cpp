@@ -155,13 +155,27 @@ void GeneralImage::GetPathFiles(const string &path, vector<string> &file_vec) {
 }
 
 bool GeneralImage::ArrangeImageInfo(shared_ptr<EngineTrans> &image_handle,
-                                    const string &image_path) {
+                                    const string &image_path,
+                                    const uint8_t model_type) {
   // read image using OPENCV
-  cv::Mat mat = cv::imread(image_path, CV_LOAD_IMAGE_COLOR);
+  cv::Mat mat = cv::imread(image_path, CV_LOAD_IMAGE_GRAYSCALE);
   if (mat.empty()) {
     ERROR_LOG("Failed to deal file=%s. Reason: read image failed.",
               image_path.c_str());
     return false;
+  }
+
+  switch(model_type) {
+    case 0: // SRCNN
+    {
+      cv::Mat mat_bicubic; 
+      cv::resize(mat, mat_bicubic, cv::Size(0, 0), 3, 3, cv::INTER_CUBIC);
+      mat = mat_bicubic;
+    } 
+      break;
+    case 1: // FSRCNN
+    case 2: // ESPCN
+      break;
   }
 
   // set property
@@ -248,7 +262,7 @@ HIAI_IMPL_ENGINE_PROCESS("general_image",
       continue;
     }
     // arrange image information, if failed, skip this image
-    if (!ArrangeImageInfo(image_handle, path)) {
+    if (!ArrangeImageInfo(image_handle, path, console_param->model_type)) {
       continue;
     }
 
@@ -256,7 +270,8 @@ HIAI_IMPL_ENGINE_PROCESS("general_image",
     image_handle->console_params.input_path = console_param->input_path;
     image_handle->console_params.model_height = console_param->model_height;
     image_handle->console_params.model_width = console_param->model_width;
-    image_handle->console_params.output_nums = console_param->output_nums;
+    image_handle->console_params.model_type = console_param->model_type;
+    image_handle->console_params.is_colored = console_param->is_colored;
     if (!SendToEngine(image_handle)) {
       ERROR_LOG("Failed to deal file=%s. Reason: send data failed.",
                 path.c_str());

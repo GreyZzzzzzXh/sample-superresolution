@@ -116,56 +116,17 @@ HIAI_StatusT GeneralInference::Init(
 
 bool GeneralInference::PreProcess(const shared_ptr<EngineTrans> &image_handle,
                                   ImageData<u_int8_t> &resized_image) {
-  // call ez_dvpp to resize image
-  DvppBasicVpcPara resize_para;
-  resize_para.input_image_type = INPUT_BGR;
+  // do not use ez_dvpp to resize the input image
+  // just copy it
+  resized_image.format = hiai::IMAGEFORMAT::Y8;
+  resized_image.width = image_handle->image_info.width;
+  resized_image.height = image_handle->image_info.height;
+  resized_image.size = image_handle->image_info.size;
+  u_int8_t *buffer = new (nothrow) u_int8_t[resized_image.size];
+  memcpy_s(buffer, resized_image.size, image_handle->image_info.data.get(),
+           resized_image.size);
+  resized_image.data.reset(buffer, default_delete<u_int8_t[]>());
 
-  // get original image size and set to resize parameter
-  int32_t width = image_handle->image_info.width;
-  int32_t height = image_handle->image_info.height;
-
-  // set source resolution ratio
-  resize_para.src_resolution.width = width;
-  resize_para.src_resolution.height = height;
-
-  // crop parameters, only resize, no need crop, so set original image size
-  // set crop left-top point (need even number)
-  resize_para.crop_left = 0;
-  resize_para.crop_up = 0;
-  // set crop right-bottom point (need odd number)
-  uint32_t crop_right = ((width >> 1) << 1) - 1;
-  uint32_t crop_down = ((height >> 1) << 1) - 1;
-  resize_para.crop_right = crop_right;
-  resize_para.crop_down = crop_down;
-
-  // set destination resolution ratio (need even number)
-  uint32_t dst_width = ((image_handle->console_params.model_width) >> 1) << 1;
-  uint32_t dst_height = ((image_handle->console_params.model_height) >> 1) << 1;
-  resize_para.dest_resolution.width = dst_width;
-  resize_para.dest_resolution.height = dst_height;
-
-  // set input image align or not
-  resize_para.is_input_align = false;
-
-  // call
-  DvppProcess dvpp_resize_img(resize_para);
-  DvppVpcOutput dvpp_output;
-  int ret = dvpp_resize_img.DvppBasicVpcProc(
-      image_handle->image_info.data.get(), image_handle->image_info.size,
-      &dvpp_output);
-  if (ret != kDvppOperationOk) {
-    HIAI_ENGINE_LOG(HIAI_ENGINE_RUN_ARGS_NOT_RIGHT,
-                    "call ez_dvpp failed, failed to resize image.");
-    return false;
-  }
-
-  // call success, set data and size
-  resized_image.data.reset(dvpp_output.buffer, default_delete<u_int8_t[]>());
-  resized_image.size = dvpp_output.size;
-  resized_image.width = dst_width;
-  resized_image.height = dst_height;
-  image_handle->image_info.width = dst_width;
-  image_handle->image_info.height = dst_height;
   return true;
 }
 

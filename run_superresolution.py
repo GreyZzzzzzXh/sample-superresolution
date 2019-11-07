@@ -1,4 +1,4 @@
-""" classification demo params check module"""
+""" superresolution demo params check module"""
 # !/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 #
@@ -41,7 +41,7 @@ MODEL_PATH = '${MODEL_PATH}'
 GRAPH_TEMPLATE_FILE = 'graph.template'
 GRAPH_CONFIG_FILE = 'graph.config'
 
-CPP_EXE = './ascend_classification'
+CPP_EXE = './ascend_superresolution'
 CONCOLE_LIST = ' {} {} {} {} {}'
 
 
@@ -54,12 +54,12 @@ def get_args():
         -i --input_path: paths and folders of input images.
         -c --is_colored: whether the image is colored (1:yes, 0:no).
         eg:
-        python3 run_classification.py -t 0 -m srcnn.om \
+        python3 run_superresolution.py -t 0 -m srcnn.om \
         -w 224 -h 224 -i test.jpg -c 1
     """
     parser = argparse.ArgumentParser(
         conflict_handler='resolve',
-        description='eg: python3 run_classification.py -t 0 -m srcnn.om \
+        description='eg: python3 run_superresolution.py -t 0 -m srcnn.om \
         -w 224 -h 224 -i test.jpg -c 1')
     parser.add_argument('-t', '--model_type', required=True, type=int,
                         help='super-resolution model type \

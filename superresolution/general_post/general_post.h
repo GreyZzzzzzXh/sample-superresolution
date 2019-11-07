@@ -76,7 +76,7 @@ private:
    * @param [in]: result: engine transform image
    * @return: HIAI_StatusT
    */
-  HIAI_StatusT ClassficationPostProcess(
+  HIAI_StatusT SuperResolutionPostProcess(
       const std::shared_ptr<EngineTrans> &result);
 };
 

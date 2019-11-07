@@ -93,20 +93,20 @@ function deploy_cvverify()
         upload_tar_file "${script_path}/script/opencv_lib.tar" "~/HIAI_PROJECTS/ascend_lib"
     fi
     #deploy app
-    if [ -d ${script_path}/classification/out ];then
+    if [ -d ${script_path}/superresolution/out ];then
         echo "[Step] Deploy app libs..."
-        iRet=`IDE-daemon-client --host ${remote_host}:${remote_port} --hostcmd "rm -rf ~/HIAI_PROJECTS/ascend_workspace/classification"`
+        iRet=`IDE-daemon-client --host ${remote_host}:${remote_port} --hostcmd "rm -rf ~/HIAI_PROJECTS/ascend_workspace/superresolution"`
         if [[ $? -ne 0 ]];then
-            echo "ERROR: delete ${remote_host}:./HIAI_PROJECTS/ascend_workspace/classification failed, please check /var/log/syslog for details."
+            echo "ERROR: delete ${remote_host}:./HIAI_PROJECTS/ascend_workspace/superresolution failed, please check /var/log/syslog for details."
             return 1
         fi
-        upload_path ${script_path}/classification/out "~/HIAI_PROJECTS/ascend_workspace/classification/out"
+        upload_path ${script_path}/superresolution/out "~/HIAI_PROJECTS/ascend_workspace/superresolution/out"
         if [[ $? -ne 0 ]];then
             return 1
         fi
-        iRet=`IDE-daemon-client --host ${remote_host}:${remote_port} --hostcmd "chmod +x ~/HIAI_PROJECTS/ascend_workspace/classification/out/ascend_classification"`
+        iRet=`IDE-daemon-client --host ${remote_host}:${remote_port} --hostcmd "chmod +x ~/HIAI_PROJECTS/ascend_workspace/superresolution/out/ascend_superresolution"`
         if [[ $? -ne 0 ]];then
-            echo "ERROR: change excution mode ${remote_host}:./HIAI_PROJECTS/ascend_workspace/classification/out/* failed, please check /var/log/syslog for details."
+            echo "ERROR: change excution mode ${remote_host}:./HIAI_PROJECTS/ascend_workspace/superresolution/out/* failed, please check /var/log/syslog for details."
             return 1
         fi
     fi
@@ -125,7 +125,7 @@ main()
         exit 1
     fi
     
-    echo "Finish to deploy classification."
+    echo "Finish to deploy superresolution."
     exit 0
 }
 

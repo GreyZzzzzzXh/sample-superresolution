@@ -192,7 +192,7 @@ void GenerateAndSaveImage(uint8_t *result, uint32_t height, uint32_t width,
   }
 }
 
-HIAI_StatusT GeneralPost::ClassficationPostProcess(
+HIAI_StatusT GeneralPost::SuperResolutionPostProcess(
     const std::shared_ptr<EngineTrans> &result) {
   string file_path = result->image_info.path;
   // check vector
@@ -274,5 +274,5 @@ HIAI_IMPL_ENGINE_PROCESS("general_post", GeneralPost, INPUT_SIZE) {
   }
 
   // arrange result
-  return ClassficationPostProcess(result);
+  return SuperResolutionPostProcess(result);
 }

@@ -97,19 +97,19 @@
 
 2.  进入图像超分辨率网络的可执行文件所在路径。
 
-    **cd \~/HIAI\_PROJECTS/ascend\_workspace/classification/out**
+    **cd \~/HIAI\_PROJECTS/ascend\_workspace/superresolution/out**
 
 3.  执行应用程序。
 
-    执行**run\_classification.py**脚本会将生成超分辨率图片，并保存至当前目录。
+    执行**run\_superresolution.py**脚本会将生成超分辨率图片，并保存至当前目录。
 
     命令示例如下所示：
 
-    **python3 run\_classification.py -t _0_ -m _\~/models/SRCNN\_768\_768.om_ -w _768_ -h _768_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
+    **python3 run\_superresolution.py -t _0_ -m _\~/models/SRCNN\_768\_768.om_ -w _768_ -h _768_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
-    **python3 run\_classification.py -t _1_ -m _\~/models/FSRCNN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
+    **python3 run\_superresolution.py -t _1_ -m _\~/models/FSRCNN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
-    **python3 run\_classification.py -t _2_ -m _\~/models/ESPCN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
+    **python3 run\_superresolution.py -t _2_ -m _\~/models/ESPCN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
     -   -t/model\_type：超分辨率网络类型，为0~2之间的整数，0、1、2分别代表SRCNN、FSRCNN与ESPCN。
     -   -m/model\_path：离线模型存储路径。
@@ -118,6 +118,6 @@
     -   -i/input\_path：输入图片的路径，可以是目录，表示当前目录下的所有图片都作为输入（可以指定多个输入）。
     -   -c/is\_colored：是否生成彩色图像，为整数0或者1，0表示生成灰度图像，1表示生成彩色图像。
 
-    其他详细参数请执行**python3 run\_classification.py --help**命令参见帮助信息。
+    其他详细参数请执行**python3 run\_superresolution.py --help**命令参见帮助信息。
 
 4.  将当前目录下生成的超分辨率图像拷贝回Mind Studio所在Ubuntu服务器进行查看。

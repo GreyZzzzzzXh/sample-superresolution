@@ -31,7 +31,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #   =======================================================================
 
-app_type="classification"
+app_type="superresolution"
 
 script_path="$( cd "$(dirname "$0")" ; pwd -P )"
 
@@ -54,17 +54,17 @@ main()
     atlas_target=`echo ${atlas_target} | sed 's/ //g' `
 
     echo "Clear app build path..."
-    rm -rf ${app_path}/classification/out
+    rm -rf ${app_path}/superresolution/out
 
     echo "Build main..."
-    make mode=${atlas_target} -C ${app_path}/classification 1>/dev/null
+    make mode=${atlas_target} -C ${app_path}/superresolution 1>/dev/null
     if [ $? -ne 0 ];then
         exit 1
     fi
 
-    for file in `find ${app_path}/classification -name "Makefile"`
+    for file in `find ${app_path}/superresolution -name "Makefile"`
     do
-        if [ ${file} == "${app_path}/classification/Makefile" ];then
+        if [ ${file} == "${app_path}/superresolution/Makefile" ];then
             continue
         fi
         path=`dirname ${file}`
@@ -76,8 +76,8 @@ main()
         fi
     done
     
-    cp ${app_path}/run_classification.py ${app_path}/classification/out
-    cp ${app_path}/classification/graph.template ${app_path}/classification/out
+    cp ${app_path}/run_superresolution.py ${app_path}/superresolution/out
+    cp ${app_path}/superresolution/graph.template ${app_path}/superresolution/out
 
     echo "Finish to Build app."
     exit 0

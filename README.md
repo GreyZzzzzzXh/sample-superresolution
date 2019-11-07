@@ -100,19 +100,19 @@ Before running the application, obtain the source code package and configure the
 
 2.  Go to the path of the executable file of super-resolution application.
 
-    **cd \~/HIAI\_PROJECTS/ascend\_workspace/classification/out**
+    **cd \~/HIAI\_PROJECTS/ascend\_workspace/superresolution/out**
 
 3.  Run the application.
 
-    Run the  **run\_classification.py**  script to generate a super-resolution image and save it to the current directory.
+    Run the  **run\_superresolution.py**  script to generate a super-resolution image and save it to the current directory.
 
     Example command:
 
-    **python3 run\_classification.py -t _0_ -m _\~/models/SRCNN\_768\_768.om_ -w _768_ -h _768_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
+    **python3 run\_superresolution.py -t _0_ -m _\~/models/SRCNN\_768\_768.om_ -w _768_ -h _768_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
-    **python3 run\_classification.py -t _1_ -m _\~/models/FSRCNN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
+    **python3 run\_superresolution.py -t _1_ -m _\~/models/FSRCNN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
-    **python3 run\_classification.py -t _2_ -m _\~/models/ESPCN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
+    **python3 run\_superresolution.py -t _2_ -m _\~/models/ESPCN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
     -   **-t/model\_type**: type of super-resolution network. The value is an integer ranging from 0 to 2, and 0, 1, and 2 represent SRCNN, FSRCNN, and ESPCN respectively.
     -   **-m/model\_path**: path for storing offline models
@@ -121,7 +121,7 @@ Before running the application, obtain the source code package and configure the
     -   **-i/input\_path**: path of the input image. It can be a directory, indicating that all images in the current directory are used as input (Multiple inputs can be specified).
     -   **-c/is\_colored**: whether to generate a color image. The value is an integer 0 or 1, and 0 indicates that a grayscale image is generated, and 1 indicates that a color image is generated.
 
-    For other parameters, run the  **python3 run\_classification.py --help**  command. For details, see the help information.
+    For other parameters, run the  **python3 run\_superresolution.py --help**  command. For details, see the help information.
 
 4.  Copy the super-resolution image generated in the current directory back to the Ubuntu server where Mind Studio is located for viewing.
 

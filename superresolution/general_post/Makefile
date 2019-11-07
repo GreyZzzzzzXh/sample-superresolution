@@ -37,7 +37,7 @@ INC_DIR = \
 	-I../common/include \
 
 # link parameters
-CC_FLAGS := $(INC_DIR) -std=c++11 -fPIC -D CLASSIFICATION
+CC_FLAGS := $(INC_DIR) -std=c++11 -fPIC -D SUPERRESOLUTION
 
 ifeq ($(mode),)
 mode=AtlasDK

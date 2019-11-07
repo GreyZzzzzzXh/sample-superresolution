@@ -17,20 +17,20 @@
 
 1.  获取源码包。
 
-    将[https://github.com/GreyZzzzzzXh/sample-superresolution](https://github.com/Ascend/sample-classification)仓中的代码以Mind Studio安装用户下载至Mind Studio所在Ubuntu服务器的任意目录，例如代码存放路径为：_/home/ascend/sample-superresolution_。
+    将[https://github.com/GreyZzzzzzXh/sample-superresolution](https://github.com/GreyZzzzzzXh/sample-superresolution)仓中的代码以Mind Studio安装用户下载至Mind Studio所在Ubuntu服务器的任意目录，例如代码存放路径为：_/home/ascend/sample-superresolution_。
 
 2.  <a name="zh-cn_topic_0182554620_li29641938112018"></a>获取此应用中所需要的原始网络模型。
 
-    此应用中使用的三个原始网络模型及其对应的权重文件分别通过[SRCNN](http://mmlab.ie.cuhk.edu.hk/projects/SRCNN.html)、[FSRCNN](http://mmlab.ie.cuhk.edu.hk/projects/FSRCNN.html)以及[ESPCN](https://github.com/wangxuewen99/Super-Resolution/tree/master/ESPCN)开源代码训练得到。此外，在网络模型文件中，需要对padding参数做一些修改以保证卷积后特征图尺寸不变。
+    此应用中使用的三个原始网络模型权重分别通过[SRCNN](http://mmlab.ie.cuhk.edu.hk/projects/SRCNN.html)、[FSRCNN](http://mmlab.ie.cuhk.edu.hk/projects/FSRCNN.html)以及[ESPCN](https://github.com/wangxuewen99/Super-Resolution/tree/master/ESPCN)开源代码训练得到。另外，在网络模型文件中，需要对padding参数做一些修改以保证卷积后特征图的尺寸不变。
 
-    修改后可适用于推理的网络模型文件及训练得到的权重文件，已存放至 _sample-superresolution/caffemodel_。
+    修改后可适用于推理的网络模型文件及训练后得到的权重文件，已存放至 _sample-superresolution/caffemodel_。
 
 3.  将原始网络模型转换为Davinci模型。
-    1.  在Mind Studio操作界面的顶部菜单栏中选择“Tool \> Convert Model”，进入模型转换界面。
+    1.  在Mind Studio操作界面的顶部菜单栏中选择**Tool \> Convert Model**，进入模型转换界面。
 
-    2.  在弹出的**Convert Model**操作界面中，Model File与Weight File分别选择模型文件和权重文件。
-        -   根据低分辨率图像的高度和宽度，设置对应的**Input Shape**。注意其中的N和C都需要设置为1。
-        -   在Input Image Preprocess中，选择**Input Image Format**为YUV400_U8，**Input Image Size**与**Input Shape**中的宽高相同，**Multiplying Factor**设置为0.0039215。
+    2.  在弹出的**Convert Model**操作界面中，**Model File**与**Weight File**分别选择模型文件和权重文件。
+        -   根据低分辨率图像的高度和宽度，设置对应的**Input Shape**。如果选择的是SRCNN网络，此处的宽高需要设置为低分辨率图像的三倍。另外，注意其中的**N**和**C**都需要设置为**1**。
+        -   在**Input Image Preprocess**中，选择**Input Image Format**为**YUV400_U8**，**Input Image Size**与**Input Shape**中的宽高相同，**Multiplying Factor**设置为**0.0039215**。
 
             **图 1**  模型转换配置示例<a name="zh-cn_topic_0182554620_fig95695336322"></a>  
             ![](doc/source/img/模型转换配置示例.png "模型转换配置示例")
@@ -63,7 +63,7 @@
 
 ## 部署<a name="zh-cn_topic_0182554620_section18931344873"></a>
 
-1.  以Mind Studio安装用户进入图像超分辨率网络应用代码所在根目录，如 _/home/ascend/sample-classification_。
+1.  以Mind Studio安装用户进入图像超分辨率网络应用代码所在根目录，如 _/home/ascend/sample-superresolution_。
 2.  执行部署脚本，进行工程环境准备，包括应用的编译与部署等操作。
 
     **bash deploy.sh  _host\_ip_**
@@ -101,7 +101,7 @@
 
 3.  执行应用程序。
 
-    执行**run\_classification.py**脚本会将推理生成的超分辨率图片保存至当前目录。
+    执行**run\_classification.py**脚本会将生成超分辨率图片，并保存至当前目录。
 
     命令示例如下所示：
 
@@ -111,7 +111,7 @@
 
     **python3 run\_classification.py -t _2_ -m _\~/models/ESPCN\_256\_256.om_ -w _256_ -h _256_ -i _\~/images/Set5/butterfly\_GT.bmp_ -c _1_**
 
-    -   -t/model_type：超分辨率网络类型，为0~2之间的整数，0、1、2分别代表SRCNN、FSRCNN与ESPCN。
+    -   -t/model\_type：超分辨率网络类型，为0~2之间的整数，0、1、2分别代表SRCNN、FSRCNN与ESPCN。
     -   -m/model\_path：离线模型存储路径。
     -   -w/model\_width：模型的输入图片宽度，为16\~4096之间的整数。
     -   -h/model\_height：模型的输入图片高度，为16\~4096之间的整数。

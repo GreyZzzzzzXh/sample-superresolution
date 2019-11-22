@@ -41,7 +41,7 @@ MODEL_PATH = '${MODEL_PATH}'
 GRAPH_TEMPLATE_FILE = 'graph.template'
 GRAPH_CONFIG_FILE = 'graph.config'
 
-CPP_EXE = './ascend_superresolution'
+CPP_EXE = './main'
 CONCOLE_LIST = ' {} {} {} {} {}'
 
 

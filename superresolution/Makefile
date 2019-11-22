@@ -4,7 +4,7 @@ ifndef DDK_HOME
 $(error "Can not find DDK_HOME env, please set it in environment!.")
 endif
 
-LOCAL_MODULE_NAME := ascend_superresolution
+LOCAL_MODULE_NAME := main
 CC_FLAGS := -std=c++11
 
 local_src_files := \

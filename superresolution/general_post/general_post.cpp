@@ -231,12 +231,9 @@ HIAI_StatusT GeneralPost::SuperResolutionPostProcess(
   uint32_t output_width, output_height;
 
   // post process
-  clock_t start = clock();
   PostProcess(res, res_uint8, size, result->console_params.model_type,
       result->console_params.model_width, result->console_params.model_height,
       output_width, output_height);
-  clock_t end = clock();
-  INFO_LOG("postprocess time: %f s", (double)(end - start) / CLOCKS_PER_SEC);
 
   // generate and save BGR image
   GenerateAndSaveImage(res_uint8, output_height, output_width, file_path,

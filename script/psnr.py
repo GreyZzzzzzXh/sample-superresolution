@@ -4,8 +4,8 @@ from skimage import io as skio
 from skimage import color as skco
 
 im_gnd_path = '../images/Set5_gray/'
-im_b_path = './'
-im_h_path = './'
+im_b_path = '../outputs/'
+im_h_path = '../outputs/'
 
 imname_gnd = ('baby_GT_gnd.bmp',
               'bird_GT_gnd.bmp',

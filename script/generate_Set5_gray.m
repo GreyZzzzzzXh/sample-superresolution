@@ -5,7 +5,8 @@ close all;
 clear all;
 
 %% set parameters
-testfolder = 'Set5/';
+testfolder = '../images/Set5/';
+targetfolder = '../images/Set5_gray/';
 up_scale = 3;
 filepaths = dir(fullfile(testfolder,'*.bmp'));
 
@@ -29,6 +30,6 @@ for i = 1 : length(filepaths)
     im_l = imresize(im_gnd, 1/up_scale, 'bicubic');
     
     %% save 
-    imwrite(im_gnd, ['Set5_gray/' imname '_gnd.bmp']);
-    imwrite(im_l, ['Set5_gray/' imname '_l.bmp']);
+    imwrite(im_gnd, [targetfolder imname '_gnd.bmp']);
+    imwrite(im_l, [targetfolder imname '_l.bmp']);
 end

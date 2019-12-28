@@ -6,12 +6,12 @@ app_path="${script_path}/../src"
 
 function build_common()
 {
-	echo "build common lib..."
-    bash ${script_path}/build_ezdvpp.sh ${remote_host}
-    if [ $? -ne 0 ];then
-        echo "ERROR: Failed to deploy ezdvpp"
-        return 1
-    fi
+	# echo "build common lib..."
+    # bash ${script_path}/build_ezdvpp.sh ${remote_host}
+    # if [ $? -ne 0 ];then
+    #     echo "ERROR: Failed to deploy ezdvpp"
+    #     return 1
+    # fi
     return 0
 }
 

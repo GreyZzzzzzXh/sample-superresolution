@@ -155,12 +155,15 @@ bool GeneralImage::ArrangeImageInfo(shared_ptr<EngineTrans> &image_handle,
                                     const string &image_path,
                                     const uint8_t model_type) {
   // read image using OPENCV
-  cv::Mat mat = cv::imread(image_path, CV_LOAD_IMAGE_GRAYSCALE);
-  if (mat.empty()) {
+  cv::Mat mat_bgr = cv::imread(image_path, CV_LOAD_IMAGE_COLOR);
+  if (mat_bgr.empty()) {
     ERROR_LOG("Failed to deal file=%s. Reason: read image failed.",
               image_path.c_str());
     return false;
   }
+
+  Mat mat;
+  cv::cvtColor(mat_bgr, mat, cv::CV_BGR2GRAY);
 
   switch(model_type) {
     case 0: // SRCNN

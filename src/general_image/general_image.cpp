@@ -162,8 +162,8 @@ bool GeneralImage::ArrangeImageInfo(shared_ptr<EngineTrans> &image_handle,
     return false;
   }
 
-  Mat mat;
-  cv::cvtColor(mat_bgr, mat, cv::CV_BGR2GRAY);
+  cv::Mat mat;
+  cv::cvtColor(mat_bgr, mat, cv::COLOR_BGR2GRAY);
 
   switch(model_type) {
     case 0: // SRCNN

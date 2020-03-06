@@ -39,6 +39,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <chrono>
 
 #include "hiaiengine/log.h"
 #include "opencv2/opencv.hpp"
@@ -46,6 +47,7 @@
 
 using hiai::Engine;
 using namespace std;
+using namespace chrono;
 
 namespace {
 // callback port (engine port begin with 0)
@@ -89,37 +91,82 @@ bool GeneralPost::SendSentinel() {
   return true;
 }
 
+// cv::Mat PostProcess(float *res, uint8_t *res_uint8, int32_t size,
+//     uint8_t model_type, uint32_t model_width, uint32_t model_height) {
+//   uint32_t output_width, output_height;
+//   switch(model_type) {
+//     case 0: // SRCNN
+//       output_width = model_width;
+//       output_height = model_height;
+//       for (uint32_t i = 0; i < size; i++) {
+//         if (res[i] <= 0) {
+//           res_uint8[i] = 0;
+//         } else if (res[i] >= 1) {
+//           res_uint8[i] = 255;
+//         } else {
+//           res_uint8[i] = (uint8_t)(round(res[i] * 255));
+//         }
+//       }
+//       break;
+//     case 1: // FSRCNN
+//       output_width = model_width * 3;
+//       output_height = model_height * 3;
+//       for (uint32_t i = 0; i < size; i++) {
+//         if (res[i] <= 0) {
+//           res_uint8[i] = 0;
+//         } else if (res[i] >= 1) {
+//           res_uint8[i] = 255;
+//         } else {
+//           res_uint8[i] = (uint8_t)(round(res[i] * 255));
+//         }
+//       }
+//       break;
+//     case 2: // ESPCN
+//       output_width = model_width * 3;
+//       output_height = model_height * 3;
+//       uint32_t idx1 = 0;
+//       for (uint32_t c = 0; c < 9; c++) {
+//         for (uint32_t h = 0; h < model_height; h++) {
+//           for (uint32_t w = 0; w < model_width; w++) {
+//             // uint32_t idx2 = (h*3+c/3) * output_width + (w*3+c%3);
+//             uint32_t idx2 = (h*3+c%3) * output_width + (w*3+c/3);
+//             if (res[idx1] <= 0) {
+//               res_uint8[idx2] = 0;
+//             } else if (res[idx1] >= 1) {
+//               res_uint8[idx2] = 255;
+//             } else {
+//               res_uint8[idx2] = (uint8_t)(round(res[idx1] * 255));
+//             }
+//             idx1++;
+//           }
+//         }
+//       }
+//       break;
+//   }
+
+//   cv::Mat mat_out_y(output_height, output_width, CV_8U, res_uint8);
+//   return mat_out_y;
+// }
+
 cv::Mat PostProcess(float *res, uint8_t *res_uint8, int32_t size,
     uint8_t model_type, uint32_t model_width, uint32_t model_height) {
   uint32_t output_width, output_height;
+  cv::Mat mat_res, mat_out_y;
   switch(model_type) {
     case 0: // SRCNN
       output_width = model_width;
       output_height = model_height;
-      for (uint32_t i = 0; i < size; i++) {
-        if (res[i] <= 0) {
-          res_uint8[i] = 0;
-        } else if (res[i] >= 1) {
-          res_uint8[i] = 255;
-        } else {
-          res_uint8[i] = (uint8_t)(round(res[i] * 255));
-        }
-      }
+      mat_res = cv::Mat(output_height, output_width, CV_32F, res);
+      mat_res.convertTo(mat_out_y, CV_8U, 255);
       break;
     case 1: // FSRCNN
       output_width = model_width * 3;
       output_height = model_height * 3;
-      for (uint32_t i = 0; i < size; i++) {
-        if (res[i] <= 0) {
-          res_uint8[i] = 0;
-        } else if (res[i] >= 1) {
-          res_uint8[i] = 255;
-        } else {
-          res_uint8[i] = (uint8_t)(round(res[i] * 255));
-        }
-      }
+      mat_res = cv::Mat(output_height, output_width, CV_32F, res);
+      mat_res.convertTo(mat_out_y, CV_8U, 255);
       break;
     case 2: // ESPCN
+      // TODO: use OpenCV to optimize...
       output_width = model_width * 3;
       output_height = model_height * 3;
       uint32_t idx1 = 0;
@@ -139,10 +186,9 @@ cv::Mat PostProcess(float *res, uint8_t *res_uint8, int32_t size,
           }
         }
       }
+      mat_out_y = cv::Mat(output_height, output_width, CV_8U, res_uint8);
       break;
   }
-
-  cv::Mat mat_out_y(output_height, output_width, CV_8U, res_uint8);
   return mat_out_y;
 }
 
@@ -230,8 +276,13 @@ HIAI_StatusT GeneralPost::SuperResolutionPostProcess(
 
   // post process
   uint8_t res_uint8[size];
+  auto start = system_clock::now();
   cv::Mat mat_out_y = PostProcess(res, res_uint8, size, result->console_params.model_type,
       result->console_params.model_width, result->console_params.model_height);
+  auto end = system_clock::now();
+  auto duration = duration_cast<microseconds>(end - start);
+  INFO_LOG("PostProcess time: %f s", double(duration.count()) * microseconds::period::num /
+      microseconds::period::den);
 
   // generate and save BGR image
   GenerateAndSaveImage(mat_out_y, file_path,

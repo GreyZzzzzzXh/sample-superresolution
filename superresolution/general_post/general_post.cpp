@@ -89,9 +89,9 @@ bool GeneralPost::SendSentinel() {
   return true;
 }
 
-void PostProcess(float *res, uint8_t *res_uint8, int32_t size,
-    uint8_t model_type, uint32_t model_width, uint32_t model_height,
-    uint32_t &output_width, uint32_t &output_height) {
+cv::Mat PostProcess(float *res, uint8_t *res_uint8, int32_t size,
+    uint8_t model_type, uint32_t model_width, uint32_t model_height) {
+  uint32_t output_width, output_height;
   switch(model_type) {
     case 0: // SRCNN
       output_width = model_width;
@@ -141,9 +141,12 @@ void PostProcess(float *res, uint8_t *res_uint8, int32_t size,
       }
       break;
   }
+
+  cv::Mat mat_out_y(output_height, output_width, CV_8U, res_uint8);
+  return mat_out_y;
 }
 
-void GenerateAndSaveImage(uint8_t *result, uint32_t height, uint32_t width,
+void GenerateAndSaveImage(cv::Mat mat_out_y,
     string file_path, uint8_t model_type, uint8_t is_colored) {
   // output file name
   int pos = file_path.find_last_of('/');
@@ -154,8 +157,6 @@ void GenerateAndSaveImage(uint8_t *result, uint32_t height, uint32_t width,
   if (model_type == 0) output_name.insert(pos, "_srcnn");
   else if (model_type == 1) output_name.insert(pos, "_fsrcnn");
   else output_name.insert(pos, "_espcn");
-
-  cv::Mat mat_out_y(height, width, CV_8U, result);
 
   // generate colored image
   if (is_colored) {
@@ -227,16 +228,13 @@ HIAI_StatusT GeneralPost::SuperResolutionPostProcess(
     return HIAI_ERROR;
   }
 
-  uint8_t res_uint8[size];
-  uint32_t output_width, output_height;
-
   // post process
-  PostProcess(res, res_uint8, size, result->console_params.model_type,
-      result->console_params.model_width, result->console_params.model_height,
-      output_width, output_height);
+  uint8_t res_uint8[size];
+  cv::Mat mat_out_y = PostProcess(res, res_uint8, size, result->console_params.model_type,
+      result->console_params.model_width, result->console_params.model_height);
 
   // generate and save BGR image
-  GenerateAndSaveImage(res_uint8, output_height, output_width, file_path,
+  GenerateAndSaveImage(mat_out_y, file_path,
       result->console_params.model_type, result->console_params.is_colored);
 
   delete[] res;

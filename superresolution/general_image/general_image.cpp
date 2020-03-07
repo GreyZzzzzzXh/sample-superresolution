@@ -175,6 +175,7 @@ bool GeneralImage::ArrangeImageInfo(shared_ptr<EngineTrans> &image_handle,
       break;
     case 1: // FSRCNN
     case 2: // ESPCN
+    case 3: // IDN
       break;
   }
 

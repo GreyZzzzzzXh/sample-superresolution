@@ -72,3 +72,4 @@ if __name__ == '__main__':
     sr('srcnn')
     sr('fsrcnn')
     sr('espcn')
+    sr('idn')

@@ -140,11 +140,22 @@ cv::Mat PostProcess(float *res, uint8_t *res_uint8, int32_t size,
       output_width = model_width * 3;
       output_height = model_height * 3;
       mat_res = cv::Mat(output_height, output_width, CV_32F, res);
-      cv::Mat mat_gray_uint, mat_gray_fp, mat_bicubic; 
-      mat_gray_uint = cv::imread(file_path, CV_LOAD_IMAGE_GRAYSCALE);
-      mat_gray_uint.convertTo(mat_gray_fp, CV_32F, 1/255.0);
-      cv::resize(mat_gray_fp, mat_bicubic, cv::Size(0, 0), 3, 3, cv::INTER_CUBIC);
-      mat_res = mat_res + mat_bicubic;
+
+      // 向右下方向各平移一个像素
+      cv::Mat mat_res_t;
+      cv::Mat t_mat =cv::Mat::zeros(2, 3, CV_32F);
+      t_mat.at<float>(0, 0) = 1;
+      t_mat.at<float>(0, 2) = 1; //水平平移量
+      t_mat.at<float>(1, 1) = 1;
+      t_mat.at<float>(1, 2) = 1; //竖直平移量
+      cv::warpAffine(mat_res, mat_res_t, t_mat, mat_res.size());
+
+      cv::Mat mat_gray, mat_bicubic; 
+      cv::imread(file_path, CV_LOAD_IMAGE_GRAYSCALE)
+          .convertTo(mat_gray, CV_32F, 1/255.0);
+      cv::resize(mat_gray, mat_bicubic, cv::Size(0, 0), 3, 3, cv::INTER_CUBIC);
+
+      mat_res = mat_res_t + mat_bicubic;
       mat_res.convertTo(mat_out_y, CV_8U, 255);
     }
       break;

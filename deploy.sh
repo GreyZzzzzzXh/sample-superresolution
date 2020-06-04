@@ -57,11 +57,11 @@ function deploy_cvverify()
     parse_remote_port
 
     #build common
-    # echo "[Step] Build common libs..."
-    # bash ${script_path}/script/build_ezdvpp.sh ${download_mode}
-    # if [[ $? -ne 0 ]];then
-    #     return 1
-    # fi
+    echo "[Step] Build common libs..."
+    bash ${script_path}/script/build_ezdvpp.sh ${download_mode}
+    if [[ $? -ne 0 ]];then
+        return 1
+    fi
 
     
 

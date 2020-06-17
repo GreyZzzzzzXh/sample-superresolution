@@ -35,8 +35,12 @@ def bicubic():
 
     for i in range(num):
         ''' load image '''
-        im_b = skio.imread(im_b_path + imname_b[i]) # gray [0-255]
-        im_gnd = skio.imread(im_gnd_path + imname_gnd[i])
+        try:
+            im_b = skio.imread(im_b_path + imname_b[i]) # gray [0-255]
+            im_gnd = skio.imread(im_gnd_path + imname_gnd[i])
+        except IOError as err:
+            print('Mean PSNR for bicubic: -------  ' + str(err))
+            return
         ''' remove border '''
         im_b = shave(im_b, border)
         im_gnd = shave(im_gnd, border)
@@ -56,8 +60,12 @@ def sr(model_name):
 
     for i in range(num):
         ''' load image '''
-        im_h = skio.imread(im_h_path + imname_h[i])
-        im_gnd = skio.imread(im_gnd_path + imname_gnd[i])
+        try:
+            im_h = skio.imread(im_h_path + imname_h[i])
+            im_gnd = skio.imread(im_gnd_path + imname_gnd[i])
+        except IOError as err:
+            print('Mean PSNR for {}: -------  '.format(model_name) + str(err))
+            return
         ''' remove border '''
         im_h = shave(im_h, border)
         im_gnd = shave(im_gnd, border)

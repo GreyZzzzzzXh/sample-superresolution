@@ -1,0 +1,153 @@
+name: "ESPCN"
+input: "data"
+input_dim: 1
+input_dim: 1
+input_dim: 256
+input_dim: 256
+
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 0.1
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 5
+    stride: 1
+    pad: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "tanh1"
+  bottom: "conv1"
+  top: "conv1"
+  type: "TanH"
+}
+
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "conv1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 0.1
+  }
+  convolution_param {
+    num_output: 32
+    kernel_size: 3
+    stride: 1
+    pad: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "tanh2"
+  bottom: "conv2"
+  top: "conv2"
+  type: "TanH"
+}
+
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "conv2"
+  top: "conv3"
+  param {
+    lr_mult: 0.1
+  }
+  param {
+    lr_mult: 0.1
+  }
+  convolution_param {
+    num_output: 9
+    kernel_size: 3
+    stride: 1
+    pad: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+# pixelShuffle
+# https://github.com/onnx/onnx/blob/master/docs/Operators.md#DepthToSpace
+
+layer {
+  name: "reshape"
+  type: "Reshape"
+  bottom: "conv3"
+  top: "reshape"
+  reshape_param {
+    shape {
+      dim: 3
+      dim: 3
+      dim: 0
+      dim: 0
+    }
+  }
+}
+
+layer {
+  name: "permute"
+  type: "Permute"
+  bottom: "reshape"
+  top: "permute"
+  # permute_param {
+  #   order: 2
+  #   order: 0
+  #   order: 3
+  #   order: 1
+  # }
+  permute_param {
+    order: 2
+    order: 1
+    order: 3
+    order: 0
+  }
+}
+
+# layer {
+#   name: "reshape2"
+#   type: "Reshape"
+#   bottom: "permute"
+#   top: "reshape2"
+#   reshape_param {
+#     shape {
+#       dim: 1
+#       dim: 1
+#       dim: 768
+#       dim: 768
+#     }
+#   }
+# }
